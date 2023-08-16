@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 export const MaterialTailwind = React.createContext(null);
 MaterialTailwind.displayName = "MaterialTailwindContext";
 
-export function reducer(state: any, action: any) {
+export function reducer(state, action) {
   switch (action.type) {
     case "OPEN_SIDENAV": {
       return { ...state, openSidenav: action.value };
@@ -30,15 +30,7 @@ export function reducer(state: any, action: any) {
   }
 }
 
-interface providerProps {
-  // styles: string;
-  // children: JSX.Element;
-  children: any;
-}
-
-// export function MaterialTailwindControllerProvider({ children }) {
-// export function MaterialTailwindControllerProvider(props) {
-  export  const MaterialTailwindControllerProvider: React.FC<providerProps> = (props): JSX.Element => {
+export function MaterialTailwindControllerProvider({ children }) {
   const initialState = {
     openSidenav: false,
     sidenavColor: "blue",
@@ -49,14 +41,14 @@ interface providerProps {
   };
 
   const [controller, dispatch] = React.useReducer(reducer, initialState);
-  const value: any = React.useMemo(
+  const value = React.useMemo(
     () => [controller, dispatch],
     [controller, dispatch]
   );
 
   return (
     <MaterialTailwind.Provider value={value}>
-      {props.children}
+      {children}
     </MaterialTailwind.Provider>
   );
 }
@@ -76,18 +68,18 @@ export function useMaterialTailwindController() {
 MaterialTailwindControllerProvider.displayName = "/src/context/index.jsx";
 
 MaterialTailwindControllerProvider.propTypes = {
-  props.children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
-export const setOpenSidenav = (dispatch: any, value: any) =>
+export const setOpenSidenav = (dispatch, value) =>
   dispatch({ type: "OPEN_SIDENAV", value });
-export const setSidenavType = (dispatch: any, value: any) =>
+export const setSidenavType = (dispatch, value) =>
   dispatch({ type: "SIDENAV_TYPE", value });
-export const setSidenavColor = (dispatch: any, value: any) =>
+export const setSidenavColor = (dispatch, value) =>
   dispatch({ type: "SIDENAV_COLOR", value });
-export const setTransparentNavbar = (dispatch: any, value: any) =>
+export const setTransparentNavbar = (dispatch, value) =>
   dispatch({ type: "TRANSPARENT_NAVBAR", value });
-export const setFixedNavbar = (dispatch: any, value: any) =>
+export const setFixedNavbar = (dispatch, value) =>
   dispatch({ type: "FIXED_NAVBAR", value });
-export const setOpenConfigurator = (dispatch: any, value: any) =>
+export const setOpenConfigurator = (dispatch, value) =>
   dispatch({ type: "OPEN_CONFIGURATOR", value });
