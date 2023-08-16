@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -9,8 +10,56 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
+import { useMutation } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
+import { signIn } from "../../api";
+import { authenticate } from "../../store/actions/auth";
+import {
+  showCardNotification,
+  hideCardNotification,
+} from "../../store/actions/notification";
+import { Loader } from "../../UI/Loader";
 
 export function SignIn() {
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const dispatch = useDispatch();
+
+  const { isLoading, data, mutate } = useMutation({
+    mutationFn: signIn,
+    onSuccess: (auth) => {
+      dispatch(authenticate(auth));
+      dispatch(
+        showCardNotification({
+          type: "success",
+          message: "You have logged in successfully",
+        })
+      );
+      setTimeout(() => {
+        dispatch(hideCardNotification());
+      }, 5000);
+    },
+    onError: (error) => {
+      dispatch(showCardNotification({ type: "error", message: error.message }));
+      setTimeout(() => {
+        dispatch(hideCardNotification());
+      }, 5000);
+    },
+  });
+
+  const signInHandler = (event) => {
+    event.preventDefault();
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+
+    if (!email || !password) return;
+    console.log("email");
+    console.log(email);
+    console.log("password");
+    console.log(password);
+
+    mutate({ email, password });
+  };
   return (
     <>
       <img
@@ -19,7 +68,7 @@ export function SignIn() {
       />
       <div className="absolute inset-0 z-0 h-full w-full bg-black/50" />
       <div className="container mx-auto p-4">
-        <Card className="absolute top-2/4 left-2/4 w-full max-w-[24rem] -translate-y-2/4 -translate-x-2/4">
+        <Card className="absolute top-[55%] left-2/4 w-full max-w-[24rem] -translate-y-2/4 -translate-x-2/4">
           <CardHeader
             variant="gradient"
             color="blue"
@@ -30,14 +79,40 @@ export function SignIn() {
             </Typography>
           </CardHeader>
           <CardBody className="flex flex-col gap-4">
-            <Input type="email" label="Email" size="lg" />
-            <Input type="password" label="Password" size="lg" />
+            <div className="flex flex-col">
+              <label className="font-bold">Email</label>
+              <input
+                className="bg-gray-light-1 rounded border-[1px] 
+                border-gray-400 p-2  text-sm outline-none transition-all
+                focus:border-green-400 focus:bg-gray-200"
+                type="email"
+                ref={emailRef}
+                placeholder="Email"
+                required
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="font-bold">Password</label>
+              <input
+                className="bg-gray-light-1 rounded border-[1px] 
+                border-gray-400 p-2  text-sm outline-none transition-all
+                focus:border-green-400 focus:bg-gray-200"
+                type="password"
+                ref={passwordRef}
+                placeholder="Password"
+                required
+              />
+            </div>
             <div className="-ml-2.5">
               <Checkbox label="Remember Me" />
             </div>
           </CardBody>
           <CardFooter className="pt-0">
-            <Button variant="gradient" fullWidth>
+            <Button
+              variant="gradient"
+              fullWidth
+              onClick={(event) => signInHandler(event)}
+            >
               Log In
             </Button>
             <Typography variant="small" className="mt-6 flex justify-center">
