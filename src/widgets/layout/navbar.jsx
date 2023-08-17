@@ -9,6 +9,7 @@ import {
   IconButton,
 } from "@material-tailwind/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import logo from "../../assets/Images/logo1.jpeg";
 
 export function Navbar({ brandName, routes, action }) {
   const [openNav, setOpenNav] = React.useState(false);
@@ -46,12 +47,9 @@ export function Navbar({ brandName, routes, action }) {
     <MTNavbar className="p-3">
       <div className="container mx-auto flex items-center justify-between text-blue-gray-900">
         <Link to="/">
-          <Typography
-            variant="small"
-            className="mr-4 ml-2 cursor-pointer py-1.5 font-bold"
-          >
-            {brandName}
-          </Typography>
+          <div>
+            <img src={logo} alt="logo" />
+          </div>
         </Link>
         <div className="hidden lg:block">{navList}</div>
         {React.cloneElement(action, {
@@ -83,7 +81,7 @@ export function Navbar({ brandName, routes, action }) {
 }
 
 Navbar.defaultProps = {
-  brandName: "Material Tailwind React",
+  brandName: "Agri Connect",
   action: (
     <a
       href="https://www.creative-tim.com/product/material-tailwind-dashboard-react"
